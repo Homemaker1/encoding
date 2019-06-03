@@ -1,15 +1,12 @@
-from ftplib import FTP
 import os
 import json
+import urllib2
 
 data = json.loads(open("indexes.json", "r").read())
 
 if not os.path.exists("UnicodeData.txt"):
-  # Download UnicodeData.txt via FTP if it doesn't exist yet
-  ftp = FTP("ftp.unicode.org")
-  ftp.login()
-  ftp.retrbinary("RETR /Public/UNIDATA/UnicodeData.txt", open("UnicodeData.txt","wb").write)
-  ftp.quit()
+  # Download UnicodeData.txt if it doesn't exist yet
+  open("UnicodeData.txt","wb").write(urllib2.urlopen("https://unicode.org/Public/UNIDATA/UnicodeData.txt").read())
 
 names = open("UnicodeData.txt", "r").readlines()
 
@@ -61,9 +58,6 @@ def get_name(cp):
 for index in data:
     import codecs, hashlib, datetime
     handle = codecs.open("index-" + index + ".txt", "w", "utf-8")
-    handle.write("# Any copyright is dedicated to the Public Domain.\n")
-    handle.write("# https://creativecommons.org/publicdomain/zero/1.0/\n")
-    handle.write("#\n")
     handle.write("# For details on index index-" + index + ".txt see the Encoding Standard\n")
     handle.write("# https://encoding.spec.whatwg.org/\n")
     handle.write("#\n")
